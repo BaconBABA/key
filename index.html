@@ -330,15 +330,12 @@
     </footer>
 
     <script>
-        // Global variables
         const TASK_URL = 'https://lootdest.org/s?KTz9Kydo';
         let taskCompleted = false;
         let currentHwid = null;
         let verificationToken = null;
         
-        // Check if returning from task
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize elements
             const redirectCard = document.getElementById('redirectCard');
             const keyCard = document.getElementById('keyCard');
             const step1Status = document.getElementById('step1Status');
@@ -352,16 +349,13 @@
             const keyResult = document.getElementById('keyResult');
             const countdownElement = document.getElementById('countdown');
             
-            // Check if we're returning from the task page
             const urlParams = new URLSearchParams(window.location.search);
             verificationToken = urlParams.get('verification');
             
             if (verificationToken) {
-                // Validate the verification token (would be more secure on server-side)
                 verifyTaskCompletion(verificationToken);
             }
             
-            // Update countdown timer
             function updateCountdown() {
                 const now = new Date();
                 const minutesLeft = 59 - now.getMinutes();
@@ -371,33 +365,22 @@
                 countdownElement.textContent = formattedTime;
             }
             
-            // Function to verify task completion
             function verifyTaskCompletion(token) {
-                // Update UI to show verification in progress
                 updateProgressUI(1);
-                
-                // In a real implementation, this would make a secure API call to verify the token
-                // For demonstration purposes, we'll simulate verification
                 setTimeout(() => {
-                    // Simulate token validation logic
-                    // In production, this would be a secure server-side check
                     const isValid = validateVerificationToken(token);
                     
                     if (isValid) {
-                        // Mark task as completed
                         taskCompleted = true;
                         updateProgressUI(3);
                         
-                        // Show the key generation section
                         setTimeout(() => {
                             redirectCard.style.display = 'none';
                             keyCard.style.display = 'block';
                             
-                            // Start HWID detection
                             detectHardwareID();
                         }, 1000);
                     } else {
-                        // Invalid verification
                         updateProgressUI(1);
                         
                         taskResult.className = 'result error';
@@ -407,17 +390,11 @@
                 }, 2000);
             }
             
-            // Function to validate the verification token
             function validateVerificationToken(token) {
-                // In a real implementation, this would verify the token with your backend
-                // For demonstration, we'll check if it matches a specific pattern
-                
-                // Simple check: token should be at least 20 chars and start with "VERIFY-"
                 if (token && token.length >= 20 && token.startsWith('VERIFY-')) {
                     return true;
                 }
                 
-                // For demo purposes, also accept "demo" as a valid token
                 if (token === 'demo') {
                     return true;
                 }
@@ -425,9 +402,7 @@
                 return false;
             }
             
-            // Update the progress UI based on current step
             function updateProgressUI(step) {
-                // Update step indicators
                 if (step >= 1) {
                     step1Status.innerHTML = '<div class="indicator completed"></div><span>Completed</span>';
                     progressBar.style.width = '33%';
@@ -442,18 +417,15 @@
                     step3Status.innerHTML = '<div class="indicator completed"></div><span>Completed</span>';
                     progressBar.style.width = '100%';
                     
-                    // Update task result message
                     taskResult.className = 'result success';
                     taskResult.style.display = 'block';
                     taskResult.textContent = 'Task verification completed successfully! You can now generate your key.';
                 }
             }
             
-            // Detect hardware ID
             function detectHardwareID() {
                 hwidInfo.textContent = "Detecting your hardware...";
                 
-                // Simulate hardware detection (in a real app, this would use Canvas, WebGL, etc.)
                 setTimeout(() => {
                     try {
                         const canvas = document.createElement('canvas');
@@ -461,33 +433,26 @@
                         
                         let components = [];
                         
-                        // Browser and OS info
                         components.push(navigator.userAgent);
                         components.push(navigator.language);
                         components.push(navigator.hardwareConcurrency);
                         components.push(screen.width + 'x' + screen.height + 'x' + screen.colorDepth);
                         
-                        // WebGL fingerprinting
                         if (gl) {
                             components.push(gl.getParameter(gl.VENDOR));
                             components.push(gl.getParameter(gl.RENDERER));
                         }
                         
-                        // Local timezone
                         components.push(Intl.DateTimeFormat().resolvedOptions().timeZone);
                         
-                        // Use verification token as additional seed
                         if (verificationToken) {
                             components.push(verificationToken);
                         }
                         
-                        // Generate hash from components
                         const hwid = generateHwidFromComponents(components);
                         
-                        // Format the HWID in a readable format
                         currentHwid = `HWID-${hwid.substring(0, 4)}-${hwid.substring(4, 8)}-${hwid.substring(8, 12)}-${hwid.substring(12, 16)}`;
                         
-                        // Display HWID and enable button
                         hwidInfo.textContent = currentHwid;
                         generateBtn.disabled = false;
                         
@@ -498,9 +463,7 @@
                 }, 1500);
             }
             
-            // Generate HWID from component array
             function generateHwidFromComponents(components) {
-                // Join all components and create a hash
                 const componentString = components.join('|');
                 
                 function simpleHash(str) {
@@ -508,19 +471,17 @@
                     for (let i = 0; i < str.length; i++) {
                         const char = str.charCodeAt(i);
                         hash = ((hash << 5) - hash) + char;
-                        hash = hash & hash; // Convert to 32bit integer
+                        hash = hash & hash;
                     }
                     return Math.abs(hash).toString(16).padStart(8, '0');
                 }
                 
-                // Create multiple hashes and combine them
                 const hash1 = simpleHash(componentString);
                 const hash2 = simpleHash(componentString.split('').reverse().join(''));
                 
                 return (hash1 + hash2).substring(0, 16).toUpperCase();
             }
             
-            // Generate key based on HWID and current time
             function generateKey() {
                 if (!currentHwid) {
                     keyResult.className = 'result error';
@@ -536,20 +497,16 @@
                     return;
                 }
                 
-                // Show loading state
                 generateBtn.disabled = true;
                 generateBtnText.innerHTML = '<span class="loading"></span>Generating...';
                 
-                // Simulate API call delay
                 setTimeout(() => {
                     try {
-                        // Get current time components for the hourly reset
                         const now = new Date();
                         const currentHour = now.getHours();
                         const currentDay = now.getDate();
                         const currentMonth = now.getMonth() + 1;
                         
-                        // Simple hash function
                         function simpleHash(str) {
                             let hash = 0;
                             for (let i = 0; i < str.length; i++) {
@@ -560,20 +517,15 @@
                             return Math.abs(hash).toString(16);
                         }
                         
-                        // Create key components with anti-bypass measures
                         const hwidHash = simpleHash(currentHwid);
                         const timeSalt = simpleHash(`${currentDay}${currentMonth}${currentHour}`);
                         
-                        // Verification token is included in the anti-bypass hash
                         const antiBypass = simpleHash(hwidHash + timeSalt + verificationToken);
                         
-                        // Combine components to create the key
                         const key = `LL-${hwidHash.substring(0, 6)}-${timeSalt.substring(0, 6)}-${antiBypass.substring(0, 8)}`;
                         
-                        // Create raw link format
                         const rawLink = `lootlink://auth/${key}/${currentHwid}/${Math.floor(now.getTime() / 1000)}`;
                         
-                        // Display the key
                         keyResult.className = 'result success';
                         keyResult.style.display = 'block';
                         keyResult.innerHTML = `
@@ -585,7 +537,6 @@
                             </div>
                         `;
                         
-                        // Reset button state
                         generateBtn.disabled = false;
                         generateBtnText.textContent = 'Regenerate Key';
                         
@@ -601,17 +552,13 @@
                 }, 2000);
             }
             
-            // Event listeners
             generateBtn.addEventListener('click', generateKey);
             
-            // Initialize countdown
             updateCountdown();
             setInterval(updateCountdown, 1000);
         });
         
-        // Redirect to task function
         function redirectToTask() {
-            // Update UI
             const step1Status = document.getElementById('step1Status');
             step1Status.innerHTML = '<div class="indicator completed"></div><span>Completed</span>';
             
@@ -622,14 +569,10 @@
             redirectBtn.innerHTML = '<span class="loading"></span>Redirecting...';
             redirectBtn.disabled = true;
             
-            // Simulate a short delay before redirect
             setTimeout(() => {
-                // In a real implementation, you would set a cookie or localStorage flag
-                // to track that the user started the task
                 localStorage.setItem('taskStarted', 'true');
                 localStorage.setItem('taskStartTime', Date.now());
                 
-                // Redirect to the task URL
                 window.location.href = TASK_URL;
             }, 1500);
         }
