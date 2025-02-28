@@ -223,19 +223,19 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function redirectToTask() {
-  const step1Status = document.getElementById('step1Status');
-  step1Status.innerHTML = '<div class="indicator completed"></div><span>Completed</span>';
+    const step1Status = document.getElementById('step1Status');
+    step1Status.innerHTML = '<div class="indicator completed"></div><span>Completed</span>';
   
-  const progressBar = document.getElementById('progressBar');
-  progressBar.style.width = '33%';
+    const progressBar = document.getElementById('progressBar');
+    progressBar.style.width = '33%';
   
-  const redirectBtn = document.getElementById('redirectBtn');
-  redirectBtn.innerHTML = '<span class="loading"></span>Redirecting...';
-  redirectBtn.disabled = true;
+    const redirectBtn = document.getElementById('redirectBtn');
+    redirectBtn.innerHTML = '<span class="loading"></span>Redirecting...';
+    redirectBtn.disabled = true;
   
-  setTimeout(() => {
-    localStorage.setItem('taskStarted', 'true');
-    localStorage.setItem('taskStartTime', Date.now());
-    window.location.href = TASK_URL;
-  }, 1500);
-}
+    setTimeout(() => {
+      localStorage.setItem('taskStarted', 'true');
+      localStorage.setItem('taskStartTime', Date.now());
+      window.open(TASK_URL, '_blank');
+    }, 1500);
+  }
