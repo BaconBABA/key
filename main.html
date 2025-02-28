@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LootLink HWID Key Generator</title>
+    <style>
+        :root {
+            --primary: #4a00e0;
+            --primary-dark: #3900b3;
+            --secondary: #8e2de2;
+            --background: #f9f9f9;
+            --text: #333;
+            --card: #ffffff;
+            --error: #ff4757;
+            --success: #2ed573;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            flex: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--primary);
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .card {
+            background-color: var(--card);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        h1, h2, h3 {
+            color: var(--primary);
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .hwid-display {
+            padding: 0.8rem;
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: var(--primary-dark);
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .result {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 1.1rem;
+            word-break: break-all;
+            background-color: #f1f1f1;
+            display: none;
+        }
+
+        .success {
+            border-left: 4px solid var(--success);
+            background-color: rgba(46, 213, 115, 0.1);
+        }
+
+        .error {
+            border-left: 4px solid var(--error);
+            background-color: rgba(255, 71, 87, 0.1);
+        }
+
+        .info {
+            border-left: 4px solid var(--primary);
+            background-color: rgba(74, 0, 224, 0.1);
+            display: block;
+        }
+
+        .timer {
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #777;
+        }
+
+        .countdown {
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            background-color: var(--primary);
+            color: white;
+            margin-top: auto;
+        }
+
+        .flex-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+        }
+
+        .indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .online {
+            background-color: var(--success);
+        }
+
+        .offline {
+            background-color: var(--error);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 1rem;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">LootLink</div>
+            <p>Secure HWID Key Generation System</p>
+        </header>
+
+        <div class="card">
+            <div class="flex-row">
+                <h2>Generate Key</h2>
+                <div class="status-indicator">
+                    <div class="indicator online" id="serverStatus"></div>
+                    <span id="statusText">Server Online</span>
+                </div>
+            </div>
+            
+            <p>Your hardware ID is automatically detected for secure key generation.</p>
+            
+            <div class="input-group">
+                <label for="hwid">Your Hardware ID</label>
+                <div class="hwid-display" id="hwidDisplay">Detecting your hardware ID...</div>
+            </div>
+            
+            <div class="button-container">
+                <button id="generateBtn" disabled>
+                    <span id="generateBtnText">Generate Key</span>
+                </button>
+                <button id="refreshHwidBtn">Refresh HWID</button>
+            </div>
+            
+            <div id="keyResult" class="result"></div>
+            
+            <div class="timer">
+                Next key reset in <span id="countdown" class="countdown">60:00</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>How It Works</h2>
+            <p>Our system automatically identifies your hardware and generates a unique key that:</p>
+            <ul>
+                <li>Is tied specifically to your hardware configuration</li>
+                <li>Automatically resets every hour for enhanced security</li>
+                <li>Uses advanced encryption to prevent tampering</li>
+                <li>Includes anti-bypass protection for LootLink</li>
+            </ul>
+            <p>Keys are verified through our secure API to prevent unauthorized access and exploits.</p>
+        </div>
+        
+        <div id="hwidInfo" class="result info">
+            <strong>Privacy Notice:</strong> Your hardware ID is generated locally in your browser and is never stored on our servers unless you generate a key. We use this information solely for security verification purposes.
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2025 LootLink HWID Key Generator. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Client-side JavaScript for the HWID Key Generator
+        document.addEventListener('DOMContentLoaded', function() {
+            const generateBtn = document.getElementById('generateBtn');
+            const generateBtnText = document.getElementById('generateBtnText');
+            const refreshHwidBtn = document.getElementById('refreshHwidBtn');
+            const hwidDisplay = document.getElementById('hwidDisplay');
+            const keyResult = document.getElementById('keyResult');
+            const countdownElement = document.getElementById('countdown');
+            const serverStatus = document.getElementById('serverStatus');
+            const statusText = document.getElementById('statusText');
+            
+            let currentHwid = null;
+            
+            // Update countdown timer
+            function updateCountdown() {
+                const now = new Date();
+                const minutesLeft = 59 - now.getMinutes();
+                const secondsLeft = 59 - now.getSeconds();
+                
+                const formattedTime = `${minutesLeft.toString().padStart(2, '0')}:${secondsLeft.toString().padStart(2, '0')}`;
+                countdownElement.textContent = formattedTime;
+            }
+            
+            // Simulate server status check
+            function checkServerStatus() {
+                // In a real implementation, this would make an API call
+                const online = Math.random() > 0.05; // 95% chance of being online for demo
+                
+                if (online) {
+                    serverStatus.className = 'indicator online';
+                    statusText.textContent = 'Server Online';
+                } else {
+                    serverStatus.className = 'indicator offline';
+                    statusText.textContent = 'Server Offline';
+                }
+                
+                return online;
+            }
+            
+            // Detect hardware ID automatically
+            function detectHardwareID() {
+                return new Promise((resolve) => {
+                    // In a real implementation, this would use various browser APIs to collect hardware information
+                    // For demonstration purposes, we'll generate a somewhat realistic HWID based on available browser info
+                    
+                    hwidDisplay.textContent = "Detecting hardware...";
+                    generateBtn.disabled = true;
+                    
+                    setTimeout(() => {
+                        const canvas = document.createElement('canvas');
+                        const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                        
+                        let components = [];
+                        
+                        // Browser and OS info
+                        components.push(navigator.userAgent);
+                        components.push(navigator.language);
+                        components.push(navigator.hardwareConcurrency);
+                        components.push(navigator.deviceMemory);
+                        components.push(screen.width + 'x' + screen.height + 'x' + screen.colorDepth);
+                        
+                        // WebGL fingerprinting
+                        if (gl) {
+                            components.push(gl.getParameter(gl.VENDOR));
+                            components.push(gl.getParameter(gl.RENDERER));
+                        }
+                        
+                        // Local timezone
+                        components.push(Intl.DateTimeFormat().resolvedOptions().timeZone);
+                        
+                        // Current date to make it consistent for demo
+                        components.push(new Date().toDateString());
+                        
+                        // Generate hash from components
+                        const hwid = generateHwidFromComponents(components);
+                        
+                        // Format the HWID in a readable format
+                        const formattedHwid = `HWID-${hwid.substring(0, 4)}-${hwid.substring(4, 8)}-${hwid.substring(8, 12)}-${hwid.substring(12, 16)}-${hwid.substring(16, 20)}`;
+                        
+                        resolve(formattedHwid);
+                    }, 1500); // Simulate processing time
+                });
+            }
+            
+            // Generate HWID from component array
+            function generateHwidFromComponents(components) {
+                // Join all components and create a hash
+                const componentString = components.join('|');
+                
+                function simpleHash(str) {
+                    let hash = 0;
+                    for (let i = 0; i < str.length; i++) {
+                        const char = str.charCodeAt(i);
+                        hash = ((hash << 5) - hash) + char;
+                        hash = hash & hash; // Convert to 32bit integer
+                    }
+                    return Math.abs(hash).toString(16).padStart(8, '0');
+                }
+                
+                // Create multiple hashes from different subsets and combine them
+                const hash1 = simpleHash(componentString);
+                const hash2 = simpleHash(componentString.split('').reverse().join(''));
+                const hash3 = simpleHash(hash1 + hash2);
+                
+                return (hash1 + hash2 + hash3).substring(0, 20).toUpperCase();
+            }
+            
+            // Generate a key based on HWID and current hour
+            function generateKey(hwid) {
+                if (!hwid) {
+                    showError('Unable to detect your hardware ID. Please try refreshing.');
+                    return;
+                }
+                
+                // Show loading state
+                generateBtn.disabled = true;
+                generateBtnText.innerHTML = '<span class="loading"></span>Generating...';
+                
+                // Check server status
+                if (!checkServerStatus()) {
+                    showError('Server is currently offline. Please try again later.');
+                    generateBtn.disabled = false;
+                    generateBtnText.textContent = 'Generate Key';
+                    return;
+                }
+                
+                // Simulate API call delay
+                setTimeout(() => {
+                    try {
+                        // Get current hour for the hourly reset mechanism
+                        const now = new Date();
+                        const currentHour = now.getHours();
+                        const currentDay = now.getDate();
+                        const currentMonth = now.getMonth() + 1;
+                        
+                        // Simple hash function for demo (would use secure hashing on server)
+                        function simpleHash(str) {
+                            let hash = 0;
+                            for (let i = 0; i < str.length; i++) {
+                                const char = str.charCodeAt(i);
+                                hash = ((hash << 5) - hash) + char;
+                                hash = hash & hash; // Convert to 32bit integer
+                            }
+                            return Math.abs(hash).toString(16);
+                        }
+                        
+                        // Create components for the key
+                        const hwidHash = simpleHash(hwid);
+                        const timeSalt = simpleHash(`${currentDay}${currentMonth}${currentHour}`);
+                        const antiBypass = simpleHash(hwidHash + timeSalt + 'LootLinkSecretSalt');
+                        
+                        // Combine components to create the key
+                        const key = `LL-${hwidHash.substring(0, 8)}-${timeSalt.substring(0, 8)}-${antiBypass.substring(0, 8)}`;
+                        
+                        // Display the key
+                        showSuccess(key);
+                        
+                        // In a real implementation, this key would be stored in a database
+                        // with the HWID, creation time, and expiration time
+                        console.log('Key generated:', {
+                            hwid: hwid,
+                            key: key,
+                            generated: now.toISOString(),
+                            expires: new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours() + 1, 0, 0).toISOString()
+                        });
+                        
+                    } catch (error) {
+                        showError('An error occurred while generating your key');
+                        console.error(error);
+                    }
+                    
+                    // Reset button state
+                    generateBtn.disabled = false;
+                    generateBtnText.textContent = 'Generate Key';
+                    
+                }, 2000); // Simulate API call delay
+            }
+            
+            function showSuccess(key) {
+                keyResult.className = 'result success';
+                keyResult.style.display = 'block';
+                keyResult.innerHTML = `<strong>Your Key:</strong> ${key}`;
+            }
+            
+            function showError(message) {
+                keyResult.className = 'result error';
+                keyResult.style.display = 'block';
+                keyResult.innerHTML = `<strong>Error:</strong> ${message}`;
+            }
+            
+            // Initialize HWID detection
+            async function initHwidDetection() {
+                try {
+                    currentHwid = await detectHardwareID();
+                    hwidDisplay.textContent = currentHwid;
+                    generateBtn.disabled = false;
+                } catch (error) {
+                    hwidDisplay.textContent = "Error detecting hardware ID";
+                    showError('Failed to detect your hardware ID. Please try refreshing the page.');
+                    console.error(error);
+                }
+            }
+            
+            // Event listeners
+            generateBtn.addEventListener('click', function() {
+                generateKey(currentHwid);
+            });
+            
+            refreshHwidBtn.addEventListener('click', function() {
+                initHwidDetection();
+                keyResult.style.display = 'none';
+            });
+            
+            // Initial setup
+            initHwidDetection();
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+            checkServerStatus();
+            setInterval(checkServerStatus, 30000); // Check every 30 seconds
+        });
+    </script>
+</body>
+</html>
