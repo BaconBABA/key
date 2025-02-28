@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LootLink Task Verification</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">LootLink</div>
+      <p>Task Verification & Key Generator</p>
+    </header>
+
+    <div class="card" id="redirectCard">
+      <h2>Task Verification Required</h2>
+      <p>To generate your unique HWID-based key, you need to complete a quick verification task.</p>
+      
+      <ol class="steps">
+        <li>
+          Click the button below to navigate to the verification page
+          <div class="status-indicator" id="step1Status">
+            <div class="indicator pending"></div>
+            <span>Pending</span>
+          </div>
+        </li>
+        <li>
+          Complete the required task on the external site
+          <div class="status-indicator" id="step2Status">
+            <div class="indicator pending"></div>
+            <span>Pending</span>
+          </div>
+        </li>
+        <li>
+          Return to this page and verify completion
+          <div class="status-indicator" id="step3Status">
+            <div class="indicator pending"></div>
+            <span>Pending</span>
+          </div>
+        </li>
+      </ol>
+      
+      <div class="progress-container">
+        <div class="progress-bar">
+          <div class="progress" id="progressBar"></div>
+        </div>
+      </div>
+      
+      <div class="button-container">
+        <button id="redirectBtn" onclick="redirectToTask()">
+          Go to Verification Task
+        </button>
+      </div>
+      
+      <div id="taskResult" class="result warning">
+        This system includes anti-bypass protection. Attempting to skip the verification process will result in invalid keys.
+      </div>
+    </div>
+
+    <div class="card key-section" id="keyCard">
+      <h2>Generate Your Key</h2>
+      <p>Task verification completed! You can now generate a unique key linked to your hardware.</p>
+      
+      <div class="hwid-info" id="hwidInfo">Detecting your hardware ID...</div>
+      
+      <div class="button-container">
+        <button id="generateBtn" disabled>
+          <span id="generateBtnText">Generate Key</span>
+        </button>
+      </div>
+      
+      <div id="keyResult" class="result"></div>
+      
+      <div class="timer">
+        Next key reset in <span id="countdown" class="countdown">60:00</span>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2025 LootLink Verification System. All rights reserved.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
