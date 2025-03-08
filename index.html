@@ -1,1 +1,235 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สบู่กระดาษแบบพกพา</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&family=Roboto&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #FFD1DC;
+            font-family: 'Roboto', sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #fff;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        header h1 {
+            font-family: 'Roboto', sans-serif;
+            font-size: 2.5em;
+            margin: 0;
+        }
+        nav {
+            background-color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+        nav li {
+            margin: 0 10px;
+        }
+        nav a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 20px;
+            transition: background-color 0.3s;
+        }
+        nav a:hover {
+            background-color: #FFD1DC;
+        }
+        main {
+            padding: 20px;
+        }
+        section {
+            background-color: #fff;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 800px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s, transform 0.5s;
+        }
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        section h2 {
+            font-family: 'Comfortaa', cursive;
+            font-size: 1.8em;
+            margin-top: 0;
+        }
+        #gallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        #gallery img {
+            width: 200px;
+            height: 200px;
+            object-fit: cover;
+            margin: 10px;
+            border-radius: 10px;
+            transition: transform 0.3s;
+        }
+        #gallery img:hover {
+            transform: scale(1.05);
+        }
+        footer {
+            background-color: #fff;
+            padding: 10px;
+            text-align: center;
+            font-size: 0.8em;
+        }
+        #back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #FFD1DC;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.5em;
+            cursor: pointer;
+            display: none;
+        }
+        .nav-link.active {
+            background-color: #FFD1DC;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>สบู่กระดาษแบบพกพา 🧼</h1>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="#introduction" class="nav-link">Introduction</a></li>
+            <li><a href="#concept" class="nav-link">Concept</a></li>
+            <li><a href="#design" class="nav-link">Design</a></li>
+            <li><a href="#benefits" class="nav-link">Benefits</a></li>
+            <li><a href="#usage" class="nav-link">Usage Instructions</a></li>
+            <li><a href="#gallery" class="nav-link">Gallery</a></li>
+        </ul>
+    </nav>
+    <main>
+        <section id="introduction" class="animate">
+            <h2>Introduction 🌟</h2>
+            <p>Welcome to the 'สบู่กระดาษแบบพกพา' project! Our portable paper soap is a revolutionary way to stay clean and fresh on the go. Each sheet of paper soap is infused with gentle, moisturizing soap that dissolves in water, providing a convenient and hygienic solution for handwashing anywhere, anytime.</p>
+        </section>
+        <section id="concept" class="animate">
+            <h2>Concept 💡</h2>
+            <p>The idea behind portable paper soap came from the need for a compact, lightweight, and easy-to-carry soap option for travelers, outdoor enthusiasts, and anyone who values cleanliness. Traditional soap bars are bulky and can be messy, while liquid soaps can leak. Paper soap solves these problems by being thin, dry, and individually packaged.</p>
+        </section>
+        <section id="design" class="animate">
+            <h2>Design 🎨</h2>
+            <p>Our paper soap is made from high-quality, biodegradable materials. Each sheet is carefully crafted to be thin yet durable, ensuring it doesn't tear easily before use. The soap is infused with natural ingredients and comes in various delightful scents, such as lavender, citrus, and mint. The packaging is designed to be compact and stylish, fitting easily into wallets, purses, or pockets.</p>
+        </section>
+        <section id="benefits" class="animate">
+            <h2>Benefits 🌈</h2>
+            <ul>
+                <li>Convenience: Easy to carry and use anywhere.</li>
+                <li>Hygiene: Each sheet is single-use, reducing the risk of contamination.</li>
+                <li>Eco-friendly: Biodegradable materials minimize environmental impact.</li>
+                <li>Variety: Available in different scents to suit personal preferences.</li>
+                <li>Cost-effective: Affordable and long-lasting.</li>
+            </ul>
+        </section>
+        <section id="usage" class="animate">
+            <h2>Usage Instructions 📝</h2>
+            <ol>
+                <li>Take one sheet of paper soap from the pack.</li>
+                <li>Hold the sheet under running water or dip it in water.</li>
+                <li>Rub your hands together to create a lather.</li>
+                <li>Wash your hands thoroughly.</li>
+                <li>Rinse with water and dry your hands.</li>
+            </ol>
+        </section>
+        <section id="gallery" class="animate">
+            <h2>Gallery 📸</h2>
+            <div>
+                <img src="https://via.placeholder.com/200" alt="Paper Soap 1">
+                <img src="https://via.placeholder.com/200" alt="Paper Soap 2">
+                <img src="https://via.placeholder.com/200" alt="Paper Soap 3">
+                <img src="https://via.placeholder.com/200" alt="Paper Soap 4">
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2023 สบู่กระดาษแบบพกพา Project</p>
+    </footer>
+    <button id="back-to-top">↑</button>
+    <script>
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                window.scrollTo({
+                    top: targetElement.offsetTop - 50,
+                    behavior: 'smooth'
+                });
+            });
+        });
+        window.addEventListener('scroll', function() {
+            const backToTop = document.getElementById('back-to-top');
+            if (window.scrollY > 300) {
+                backToTop.style.display = 'block';
+            } else {
+                backToTop.style.display = 'none';
+            }
+        });
+        document.getElementById('back-to-top').addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        function checkVisibility() {
+            const sections = document.querySelectorAll('.animate');
+            sections.forEach(section => {
+                const rect = section.getBoundingClientRect();
+                if (rect.top < window.innerHeight - 100) {
+                    section.classList.add('visible');
+                }
+            });
+        }
+        window.addEventListener('scroll', checkVisibility);
+        window.addEventListener('load', checkVisibility);
+        function setActiveNav() {
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+            let currentSection = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if (window.scrollY >= sectionTop) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').substring(1) === currentSection) {
+                    link.classList.add('active');
+                }
+            });
+        }
+        window.addEventListener('scroll', setActiveNav);
+    </script>
+</body>
+</html>
